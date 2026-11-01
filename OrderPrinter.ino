@@ -1,4 +1,5 @@
 void setup() {
+  Serial1.begin(9600);
   Serial.begin(9600);
 
   delay(1000);
@@ -10,6 +11,27 @@ void setup() {
 
   printTestPaper();
 
+    for (byte n = 1; n <= 4; n++) {
+        Serial.print("Status ");
+        Serial.print(n);
+        Serial.print(": ");
+
+        Serial1.write(0x10); // DLE
+        Serial1.write(0x04); // EOT
+        Serial1.write(n);
+
+        // Wait for printer response
+        unsigned long start = millis();
+
+   while (millis() - start < 500) {
+              byte response = printer.read();
+
+              Serial.print("0x");
+              if (response < 16) Serial.print("0");
+              Serial.println(response, HEX);
+
+              break;
+        }
 
 }
 
